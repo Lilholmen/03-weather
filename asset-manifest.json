@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/github.io/03-weather/static/css/main.cef45435.css",
-    "main.js": "/github.io/03-weather/static/js/main.c1e0622c.js",
-    "index.html": "/github.io/03-weather/index.html",
-    "main.cef45435.css.map": "/github.io/03-weather/static/css/main.cef45435.css.map",
-    "main.c1e0622c.js.map": "/github.io/03-weather/static/js/main.c1e0622c.js.map"
+    "main.css": "/03-weather/static/css/main.cef45435.css",
+    "main.js": "/03-weather/static/js/main.c1e0622c.js",
+    "index.html": "/03-weather/index.html",
+    "main.cef45435.css.map": "/03-weather/static/css/main.cef45435.css.map",
+    "main.c1e0622c.js.map": "/03-weather/static/js/main.c1e0622c.js.map"
   },
   "entrypoints": [
     "static/css/main.cef45435.css",
