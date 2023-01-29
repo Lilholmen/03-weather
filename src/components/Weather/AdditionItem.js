@@ -6,7 +6,6 @@ const AdditionItem = ({ data, timeDifference }) => {
     const minutes = "0" + date.getUTCMinutes();
     const seconds = "0" + date.getUTCSeconds();
 
-    // Will display time in 10:30:23 format
     return hours.slice(-2) + ":" + minutes.slice(-2) + ":" + seconds.slice(-2);
   };
 
