@@ -1,16 +1,31 @@
 import { useEffect, useState } from "react";
 import uuid from "react-uuid";
 import { useGeolocated } from "react-geolocated";
-import Weather from "./components/Weather/Weather";
+
 import defaultSettings from "./utils/settings";
+
+import Weather from "./components/Weather/Weather";
 import UserSettings from "./components/UserSettings/UserSettings";
 import SearchBar from "./components/SearchBar/SearchBar";
+import SavedCities from "./components/SavedCities/SavedCities";
 
 function App() {
-  const [currentCity, setCurrentCity] = useState({
-    value: { lon: -0.12574, lat: 51.50853, name: "Your location" },
-  });
-  const [settings, setSettings] = useState(defaultSettings);
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      userDecisionTimeout: 5000,
+    });
+
+  const [savedCities, setSavedSities] = useState(
+    JSON.parse(window.localStorage.getItem("savedCities")) || []
+  );
+  const [settings, setSettings] = useState(
+    JSON.parse(window.localStorage.getItem("settings")) || defaultSettings
+  );
+
+  const [currentCity, setCurrentCity] = useState(null);
 
   const handleOnCurrentChange = (cityData) => {
     setCurrentCity(cityData);
@@ -24,9 +39,50 @@ function App() {
     );
 
     setSettings(changedSettings);
+
+    window.localStorage.setItem("settings", JSON.stringify(changedSettings));
   };
 
-  const handleCitySave = (city) => {};
+  const handleCitySave = (city) => {
+    if (city) {
+      const isNew = !savedCities.find(
+        (saved) =>
+          saved.value.lat === city.value.lat &&
+          saved.value.lon === city.value.lon
+      );
+
+      if (isNew) {
+        const changedCities = [...savedCities, { ...city, id: uuid() }];
+
+        setSavedSities(changedCities);
+
+        window.localStorage.setItem(
+          "savedCities",
+          JSON.stringify(changedCities)
+        );
+      }
+    }
+  };
+
+  const handleCityDelete = (id) => {
+    const changedCities = savedCities.filter((city) => city.id !== id);
+
+    setSavedSities(changedCities);
+
+    window.localStorage.setItem("savedCities", JSON.stringify(changedCities));
+  };
+
+  useEffect(() => {
+    if (isGeolocationAvailable && isGeolocationEnabled && coords) {
+      setCurrentCity({
+        value: {
+          lat: coords.latitude,
+          lon: coords.longitude,
+          name: "Your location",
+        },
+      });
+    }
+  }, [coords, isGeolocationAvailable, isGeolocationEnabled]);
 
   return (
     <main className="min-h-screen w-full bg-amber-100 pb-12">
@@ -48,6 +104,12 @@ function App() {
               Pin the city
             </button>
           </div>
+
+          <SavedCities
+            cities={savedCities}
+            selectCurrent={handleOnCurrentChange}
+            deleteCity={handleCityDelete}
+          />
 
           <UserSettings
             settings={settings}
