@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import AdditionItem from "./AdditionItem";
 
-const WeatherInfo = ({ info }) => {
+const WeatherInfo = ({ info, settings }) => {
   const [displayed, setDisplayed] = useState({
     city: info.label,
     country: info.sys.country,
@@ -13,7 +14,29 @@ const WeatherInfo = ({ info }) => {
     },
     icon: info.weather[0].icon,
     weather: info.weather[0].main,
+    additions: settings.map((setting) => {
+      return { ...setting, value: info[setting.value[0]][setting.value[1]] };
+    }),
   });
+
+  useEffect(() => {
+    setDisplayed({
+      city: info.label,
+      country: info.sys.country,
+      temp: {
+        main: Math.trunc(Math.abs(info.main.temp)),
+        fraction: Math.abs(info.main.temp % 1)
+          .toString()
+          .slice(1, 4),
+        sign: Math.sign(info.main.temp) < 0 ? "-" : "+",
+      },
+      icon: info.weather[0].icon,
+      weather: info.weather[0].main,
+      additions: settings.map((setting) => {
+        return { ...setting, value: info[setting.value[0]][setting.value[1]] };
+      }),
+    });
+  }, [info, settings]);
 
   return (
     <div className="flex w-2/3 flex-col gap-10 rounded-xl bg-stone-800 px-8 py-6 shadow-xl">
@@ -54,6 +77,16 @@ const WeatherInfo = ({ info }) => {
 
       <div className="flex flex-col gap-4">
         <h4 className="text-2xl text-stone-200">Additional Information:</h4>
+
+        <ul className="flex divide-x divide-stone-500">
+          {displayed.additions.map((data) => (
+            <AdditionItem
+              key={data.id}
+              data={data}
+              timeDifference={info.timezone}
+            />
+          ))}
+        </ul>
       </div>
     </div>
   );

@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { API_KEY, API_URL } from "../../utils/api";
-import WeatherInfo from "./WeatherInfo";
 
-const Weather = ({ currentCity }) => {
+import WeatherInfo from "./WeatherInfo";
+import ForecastInfo from "./ForecastInfo";
+
+const Weather = ({ settings, currentCity }) => {
   const [currentWeather, setCurrentWeather] = useState(null);
+  const [forecastWeather, setForecastWeather] = useState(null);
 
   useEffect(() => {
     if (currentCity === null) return;
@@ -12,10 +15,14 @@ const Weather = ({ currentCity }) => {
     const currentWeatherFetch = fetch(
       `${API_URL}/weather?lat=${currentCity.value.lat}&lon=${currentCity.value.lon}&appid=${API_KEY}&units=metric`
     );
+    const forecastWeatherFetch = fetch(
+      `${API_URL}/forecast?lat=${currentCity.value.lat}&lon=${currentCity.value.lon}&appid=${API_KEY}&units=metric`
+    );
 
-    Promise.all([currentWeatherFetch])
+    Promise.all([currentWeatherFetch, forecastWeatherFetch])
       .then(async (response) => {
         const weatherResponse = await response[0].json();
+        const forecastResponse = await response[1].json();
 
         setCurrentWeather({
           label:
@@ -23,6 +30,9 @@ const Weather = ({ currentCity }) => {
               ? weatherResponse.name
               : currentCity.value.name,
           ...weatherResponse,
+        });
+        setForecastWeather({
+          ...forecastResponse,
         });
       })
       .catch((err) => console.log(err));
@@ -36,7 +46,11 @@ const Weather = ({ currentCity }) => {
         </div>
       ) : (
         <div className="flex w-full flex-col items-center justify-center gap-16">
-          <WeatherInfo info={currentWeather} />
+          <WeatherInfo
+            info={currentWeather}
+            settings={settings}
+          />
+          <ForecastInfo info={forecastWeather} />
         </div>
       )}
     </>
