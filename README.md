@@ -1,6 +1,8 @@
-# Weather App
+# [Weather App](https://lilholmen.github.io/03-weather/)
 
 This project was created durning the course **React-academy** by **CDG** in 2023.
+
+_App is available online via the link in the header._
 
 ## [OpenWeather API](https://openweathermap.org/)
 
@@ -44,6 +46,13 @@ User can **enable** or **disable** information which he wants to see about _curr
 ## Available Scripts (by create-react-app)
 
 In the project directory, you can run:
+
+### `npm deploy`
+
+Runs standart react build script then build to github pages and push in gh-pages branch;
+Thereafter app can be accessed online via the link: [Weather App](https://lilholmen.github.io/03-weather/).
+
+Path can be changed in `package.json`, \_Homepage+ property.
 
 ### `npm start`
 
