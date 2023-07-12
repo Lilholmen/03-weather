@@ -1,19 +1,17 @@
-import { useState } from "react";
-import { AsyncPaginate } from "react-select-async-paginate";
-
-import { API_KEY, API_URL_GEO } from "../../utils/api";
+import { useState } from 'react'
+import { AsyncPaginate } from 'react-select-async-paginate'
 
 const SearchBar = ({ onSearchChange }) => {
-  const [search, setSearch] = useState(null);
+  const [search, setSearch] = useState(null)
 
   const handleonChange = (searchData) => {
-    setSearch(searchData);
-    onSearchChange(searchData);
-  };
+    setSearch(searchData)
+    onSearchChange(searchData)
+  }
 
-  const loadOptions = (inputValue) => {
-    return fetch(
-      `${API_URL_GEO}?q=${inputValue || "Miami"}&limit=5&appid=${API_KEY}`
+  const loadOptions = (inputValue) =>
+    fetch(
+      `${process.env.REACT_APP_API_URL_GEO}?q=${inputValue || 'Miami'}&limit=5&appid=${process.env.REACT_APP_API_KEY}`,
     )
       .then((response) => response.json())
       .then((response) => {
@@ -22,12 +20,11 @@ const SearchBar = ({ onSearchChange }) => {
             return {
               value: { lat: city.lat, lon: city.lon, name: city.name },
               label: `${city.name}, ${city.country}`,
-            };
+            }
           }),
-        };
+        }
       })
-      .catch((err) => console.log(err));
-  };
+      .catch((err) => console.log(err))
 
   return (
     <AsyncPaginate
@@ -37,7 +34,7 @@ const SearchBar = ({ onSearchChange }) => {
       onChange={handleonChange}
       loadOptions={loadOptions}
     />
-  );
-};
+  )
+}
 
-export default SearchBar;
+export default SearchBar
